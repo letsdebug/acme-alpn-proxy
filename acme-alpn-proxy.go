@@ -16,7 +16,9 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
+	"unsafe"
 )
 
 const ()
@@ -46,20 +48,23 @@ func main() {
 		iptablesRuleSpec = s
 	}
 
-	logFile, err := os.OpenFile("/var/log/acme-alpn-proxy.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0600)
-	if err != nil {
-		log.Fatalf("Failed to open log file for writing: %v", err)
+	// Redirect stdout and stderr if we're running inside something like Certbot
+	if !isTTY(os.Stdout.Fd()) || !isTTY(os.Stderr.Fd()) {
+		logFile, err := os.OpenFile("/var/log/acme-alpn-proxy.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0600)
+		if err != nil {
+			log.Fatalf("Failed to open log file for writing: %v", err)
+		}
+		defer logFile.Close()
+
+		// Close all fds so Certbot's Popen doesn't block on them
+		os.Stdout.Close()
+		os.Stderr.Close()
+
+		// Log to file
+		os.Stderr = logFile
+		os.Stdout = logFile
+		log.SetOutput(logFile)
 	}
-	defer logFile.Close()
-
-	// Close all fds so Certbot's Popen doesn't block on them
-	os.Stdout.Close()
-	os.Stderr.Close()
-
-	// Log to file
-	os.Stderr = logFile
-	os.Stdout = logFile
-	log.SetOutput(logFile)
 
 	// Program must be invoked with stop or start as its only non-flag argument
 	op := flag.Arg(0)
@@ -377,4 +382,10 @@ func alreadyRunning() (bool, int, error) {
 	}
 
 	return strings.Contains(string(statusFile), filepath.Base(os.Args[0])), pid, nil
+}
+
+func isTTY(fd uintptr) bool {
+	var termios syscall.Termios
+	_, _, err := syscall.Syscall6(syscall.SYS_IOCTL, fd, syscall.TCGETS, uintptr(unsafe.Pointer(&termios)), 0, 0, 0)
+	return err == 0
 }
