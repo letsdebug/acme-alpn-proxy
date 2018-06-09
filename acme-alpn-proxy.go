@@ -145,7 +145,6 @@ func main() {
 	start := time.Now()
 	var timeLeft time.Duration
 	for {
-		timeLeft = time.Since(start)
 		if timeLeft = time.Since(start); timeLeft > 180*time.Second {
 			log.Println("180s has passed since SIGINT, forcefully closing")
 			break
