@@ -1,0 +1,15 @@
+language: go
+go:
+- '1.10'
+script:
+- go get -t ./...
+- go build -o acme-alpn-proxy acme-alpn-proxy.go
+deploy:
+  provider: releases
+  api_key:
+    secure: VJdsZvXZxyleCFgyMcZ3gQhl3yjV1b5l5Zd8cbBlDCQISf30R6Fytcn7OrDBh2OBRW59u5inFfFN8Al32DUcxJN8KzDWrKdnrnCMiJ4uke5ssrC/4qAh0Fpng9peWKWdDb3FgVu+LW1lRP/CMUOY6XyrTSFWT3zR9SDtIqrbdErKijdIIYWqNWttkU7wIIsFLkBLb2MWnx8e0gSZS1cia3A6jA/msCft/i3GaIabd9GmpIorXE6t3QWaQmxLwlNLQcN4z8rt+I2d+qJOycpMWf1AmPCa7epnDrCQnmW2HdWdtD+P/88I7QjwZfOJTZt721Nlv5/yilk2wqiDEGmbPPVleiAcHODrNi2/OnImUvA6awBHBky3utFKkZqqv86DqSFyWzK6/geONutOnkoUMGujPrEmoc4c+AOp2+JfRrEkd6J78PDWY8DqXSWFODKJHtOrdyXalQGM/qPvi0VC8Qs2+jy1/AetK6q8K/Wz1b3EKl3DUhljVBVakKzsPkBXlkTC8eWNOY4Xijm1jvG9yrRlvw9InnS7ix4k8sMckYwgFgBRGP/cPUR9Rrv8gbx2BEj+FF6NvQkp60/+f5+CCTqnIRq3PgGagrUEc8vQDB0vLAEXDIeDGHcH5lLySg5HfPEOQqBM1Arvffr7K3p5fec0Y4WVMv8Zi5RBHOMbYxg=
+  file: acme-alpn-proxy
+  skip_cleanup: true
+  on:
+    repo: letsdebug/acme-alpn-proxy
+    tags: true
