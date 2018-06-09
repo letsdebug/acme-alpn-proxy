@@ -123,10 +123,19 @@ func main() {
 
 	<-exitCh
 	fmt.Println()
+
+	// Remove iptables redirects
 	if err := applyIptables("-D"); err != nil {
 		log.Printf("Failed to tear down iptables: %v", err)
+	} else {
+		log.Println("Removed iptables redirect")
 	}
-	log.Println("Removed iptables redirect")
+
+	// Free up the pidfile so we can start another instance concurrently
+	if err := os.Remove(pidFilePath); err != nil {
+		log.Printf("Failed to remove pidfile: %v", err)
+	}
+
 	log.Printf("Received SIGINT, will stop listening and exit after remaining %d clients have disconnected",
 		atomic.LoadUint32(&openConns))
 	if err := listener.Close(); err != nil {
@@ -134,14 +143,17 @@ func main() {
 	}
 
 	start := time.Now()
+	var timeLeft time.Duration
 	for {
-		if time.Since(start) > 180*time.Second {
+		timeLeft = time.Since(start)
+		if timeLeft = time.Since(start); timeLeft > 180*time.Second {
 			log.Println("180s has passed since SIGINT, forcefully closing")
 			break
 		}
 		if n := atomic.LoadUint32(&openConns); n > 0 {
-			log.Printf("Waiting for %d remaining clients ...", n)
-			time.Sleep(time.Second)
+			log.Printf("Waiting for %d remaining clients ... %d seconds remaining until forceful shutdown",
+				n, (180*time.Second-timeLeft)/time.Second)
+			time.Sleep(10 * time.Second)
 			continue
 		}
 		break
