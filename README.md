@@ -29,7 +29,7 @@ It works in the following way:
 
 ```bash
 # Download it once to your Linux system
-sudo curl -o /usr/sbin/acme-alpn-proxy "https://github.com/letsdebug/acme-alpn-proxy/releases/download/v.0.1.0/acme-alpn-proxy"
+sudo curl -o /usr/sbin/acme-alpn-proxy "https://github.com/letsdebug/acme-alpn-proxy/releases/download/0.1.0/acme-alpn-proxy"
 
 # Invoke your ACME client
 # This is a speculative example, the standalone authenticator in Certbot does not yet support TLS-ALPN-01
