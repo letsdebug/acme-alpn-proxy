@@ -29,7 +29,7 @@ It works in the following way:
 
 ```bash
 # Download it once to your Linux system
-sudo curl -L -o /usr/sbin/acme-alpn-proxy "https://github.com/letsdebug/acme-alpn-proxy/releases/download/0.2.0/acme-alpn-proxy"
+sudo curl -L -o /usr/sbin/acme-alpn-proxy "https://github.com/letsdebug/acme-alpn-proxy/releases/download/0.2.1/acme-alpn-proxy"
 
 # Invoke your ACME client
 # This is a speculative example, the standalone authenticator in Certbot does not yet support TLS-ALPN-01
@@ -62,3 +62,6 @@ but can be overridden with the `ACME_ALPN_PROXY_RULESPEC` env variable.
 
 #### Change the pidfile destination
 By default in `/var/run/acme-alpn-proxy.pid`, but you can override it with the `ACME_ALPN_PROXY_PIDFILE` env variable.
+
+#### Disable IPv6 iptables rules
+Use the environment variable `ACME_ALPN_PROXY_DISABLEV6=y`to not use `ip6tables`.
