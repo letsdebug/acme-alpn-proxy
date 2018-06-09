@@ -128,7 +128,12 @@ func main() {
 		log.Printf("Failed to stop listener: %v", err)
 	}
 
+	start := time.Now()
 	for {
+		if time.Since(start) > 180*time.Second {
+			log.Println("180s has passed since SIGINT, forcefully closing")
+			break
+		}
 		if n := atomic.LoadUint32(&openConns); n > 0 {
 			log.Printf("Waiting for %d remaining clients ...", n)
 			time.Sleep(time.Second)
