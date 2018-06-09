@@ -83,7 +83,7 @@ func main() {
 	}
 
 	// By now, we are in 'start' mode, bring up a listener
-	listener, err := net.Listen("tcp", "127.0.0.1:21443")
+	listener, err := net.Listen("tcp", "0.0.0.0:21443")
 	if err != nil {
 		log.Fatal("Failed to listen", err)
 	}
