@@ -161,7 +161,7 @@ func main() {
 }
 
 // For each connection, we pre-read the ClientHello frame
-// and look for the acme/tls-1 proto to be present in the
+// and look for the acme-tls/1 proto to be present in the
 // ALPN extension.
 // If it's present, we open a connection to the ALPN standalone server.
 // Otherwise, we forward the connection onto the intended destination.
@@ -179,7 +179,7 @@ func handleConn(conn net.Conn) {
 
 	var dest string
 
-	if isACME := isClientHelloWithALPN(buf, "acme/tls-1"); !isACME {
+	if isACME := isClientHelloWithALPN(buf, "acme-tls/1"); !isACME {
 		dest = fallbackDest
 		log.Printf("[%v] Not ACME TLS-ALPN, passing-through to %s", conn.RemoteAddr(), dest)
 	} else {

@@ -8,7 +8,7 @@ It works in the following way:
   - This listener pre-reads the first (up to ~16KiB) packet and checks whether:
     - It is a ClientHello TLS record
     - It contains the ALPN TLS extension
-    - It contains the `acme/tls-1` ALPN protocol
+    - It contains the `acme-tls/1` ALPN protocol
   - If these prerequisites are fulfilled, the program will proxy the TCP connection to `127.0.0.1:31443/tcp` (where you should run e.g. Certbot's standalone TLS-ALPN-01 authenticator)
   - Otherwise, the listener will proxy the TCP connection to `127.0.0.1:443/tcp`.
   - In both cases, the program will copy the ClientHello TLS record as well.
@@ -41,12 +41,12 @@ certbot certonly -d example.org -a standalone \
 
 ### Customization
 
-#### Change the fallback destination for non acme/tls-1 connections
+#### Change the fallback destination for non acme-tls/1 connections
 By default it is `127.0.0.1:443`, but you can customize it by using e.g.
 
     acme-alpn-proxy -fallback 127.0.0.1:8443 start
 
-#### Change the destination for acme/tls-1 connections
+#### Change the destination for acme-tls/1 connections
 By default, `127.0.0.1:31443`, but can be customized:
 
     acme-alpn-proxy -alpn 127.0.0.1:8443 start
